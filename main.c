@@ -1,53 +1,28 @@
 #include "servo.h"
-#include "keyboard.h"
+//#include "keyboard.h"
 #include "uart.h"
+#include "command_decoder.h"
+
+#define TERMINATOR 0xD
 
 
-
-int main (){
-	KeyboardInit();
+int main (){ 
 	UART_InitWithInt(9600);
 	ServoInit(50);
-	ServoGoTo(24);
-	//ServoGoTo(12);
-
 	while(1){
+		if(eReceiver_GetStatus()==READY){
+			Receiver_GetStringCopy(BufferCopy);
+			DecodeMsg(BufferCopy);
+		}
 		
-		switch(cOdebranyZnak){
-			case 'c':
+		switch(asToken[0].uValue.eKeyword){
+			case SERVO_CALLIB:
 				ServoCallib();
 				break;
-			
-			case '1':
-				ServoGoTo(sServo.uiCurrentPosition+12);
-				cOdebranyZnak=0;
+			case SERVO_GOTO:
+				ServoGoTo(asToken[1].uValue.uiNumber);
 				break;
-			
-			
 			default:;
 		}
-		//cOdebranyZnak=0;
-		
-		switch(eKeyboardRead()){
-				
-			case BUTTON_0:
-				ServoCallib();
-				break;
-			
-			case BUTTON_1:
-				ServoGoTo(48);
-				break;
-			
-			case BUTTON_2:
-				ServoGoTo(96);
-				break;
-			
-			case BUTTON_3:
-				ServoGoTo(36);
-				break;
-			
-			default:;
-				
-		}
-	}
+	}	
 }
