@@ -1,28 +1,53 @@
-//#include "keyboard.h"
-#include "timer.h"
+#include "timer_interrupts.h"
 #include "led.h"
+#include "keyboard.h"
 
-#include <LPC21xx.H>
+enum MovementState{STOP, MOVE_LEFT, MOVE_RIGHT};
+enum MovementState eMovementState = MOVE_RIGHT;
 
-#define COUNTER_ENABLE 0x1
-#define COUNTER_RESET 0x2
-#define PCLK_FREQ  15000000
-#define RESET_ON_MR0 1<<1
-#define INTERRUPT_ON_MR0 1<<0
-#define MR0_INTERRUPT    1<<0
-#define STOP_ON_MR0 1<<2
+void Automat(void){
 
+	switch(eMovementState){
 
-int uiDelayTime =100;
-int a;
+		case STOP:
+			if(eKeyboardRead() == BUTTON_0){
+				eMovementState=MOVE_LEFT;
+			}
+			else if(eKeyboardRead() == BUTTON_2){
+				eMovementState=MOVE_RIGHT;
+			}
+			else{
+				eMovementState=STOP;
+			}
+			break;
+			
+		case MOVE_RIGHT:
+			if(eKeyboardRead() == BUTTON_1){
+				eMovementState=STOP;
+			}
+			else{
+				LedStepRight();
+				eMovementState=MOVE_RIGHT;
+			}
+			break;
+				
+		case MOVE_LEFT:
+			if(eKeyboardRead() == BUTTON_1){
+				eMovementState=STOP;
+			}
+			else{
+				LedStepLeft();
+				eMovementState=MOVE_LEFT;
+			}
+	}
+}
 
-
-
-int main(){
+int main (){
+	unsigned int iMainLoopCtr;
 	LedInit();
-	InitTimer0Match0(10000000);
+	Timer0Interrupts_Init(20000, &Automat);
+
 	while(1){
-		WaitOnTimer0Match0();
-		LedStepRight();
+		iMainLoopCtr++;
 	}
 }
