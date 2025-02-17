@@ -1,9 +1,10 @@
+//#define LED_H_
 enum Direction {LEFT, RIGHT};
 
-void LedOn(unsigned char ucLedIndeks);
-//void LedStep(enum Direction eDirection);
 void LedInit(void);
-void LedStepLeft(void);
+//void LedOn(unsigned char ucLedIndeks);
+//void LedStep(enum Direction eDirection);
+//void LedStepLeft(void);
 void LedStepRight(void);
 
 

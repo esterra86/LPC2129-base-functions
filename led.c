@@ -6,7 +6,10 @@
 #define LED2_bm (1<<18)
 #define LED3_bm (1<<19)				
 
-//unsigned int uiLed;
+void LedInit(void){	
+	IO1DIR |= LED0_bm|LED1_bm|LED2_bm|LED3_bm;   
+	IO1SET =LED0_bm;
+}
 
 void LedOn(unsigned char ucLedIndeks){//
 
@@ -39,11 +42,6 @@ void LedStep(enum Direction eDirection){
 			break;
 	}
 	LedOn(uiLed%4);
-}
-void LedInit(void){	
-	IO1DIR |= LED0_bm|LED1_bm|LED2_bm|LED3_bm;   
-	IO1SET =LED0_bm;
-	//uiLed=0;
 }
 
 void LedStepLeft(void){
