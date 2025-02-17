@@ -1,28 +1,45 @@
 #include "servo.h"
 #include "keyboard.h"
+#include "uart.h"
 
 
 
 int main (){
 	KeyboardInit();
+	UART_InitWithInt(9600);
 	ServoInit(50);
 	ServoGoTo(24);
-	ServoGoTo(12);
-	while(1){
+	//ServoGoTo(12);
 
+	while(1){
 		
-			switch(eKeyboardRead()){
+		switch(cOdebranyZnak){
+			case 'c':
+				ServoCallib();
+				break;
+			
+			case '1':
+				ServoGoTo(sServo.uiCurrentPosition+12);
+				cOdebranyZnak=0;
+				break;
+			
+			
+			default:;
+		}
+		//cOdebranyZnak=0;
+		
+		switch(eKeyboardRead()){
 				
 			case BUTTON_0:
 				ServoCallib();
 				break;
 			
 			case BUTTON_1:
-				ServoGoTo(12);
+				ServoGoTo(48);
 				break;
 			
 			case BUTTON_2:
-				ServoGoTo(24);
+				ServoGoTo(96);
 				break;
 			
 			case BUTTON_3:
@@ -32,6 +49,5 @@ int main (){
 			default:;
 				
 		}
-		
 	}
 }
